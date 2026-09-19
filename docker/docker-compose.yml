@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: rain-alert-app
+    ports:
+      - "8007:8787"
+    volumes:
+      - ../:/app
+      - /app/node_modules
+      - /app/.wrangler
+  
+  cron:
+    image: alpine:latest
+    container_name: rain-alert-cron
+    restart: always
+    depends_on:
+      - app
+    # 起動時に curl をインストールして cron をフォアグラウンド実行
+    command: >
+      sh -c "
+        apk add --no-cache curl && 
+        cp /config/crontab /etc/crontabs/root &&
+        chmod 600 /etc/crontabs/root &&
+        # crond -f -L /dev/stdout -l 2
+        crond -f
+      "
+    volumes:
+      - ./crontab:/config/crontab:ro

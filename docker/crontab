@@ -1,0 +1,2 @@
+0 22 * * SUN-THU curl -s -H "Host: localhost:8787" http://app:8787/cdn-cgi/local/scheduled
+0 3 * * MON-FRI curl -s -H "Host: localhost:8787" http://app:8787/cdn-cgi/local/scheduled
