@@ -1,10 +1,13 @@
 # 概要
 定期的に気象予報をチェックして、雨が降る場合はntfyでスマホに通知を送るツール。
 
+> [!warning]
+> CloudFlare Workersではntfyに送信しても429になるため使えなかったので、実質Dockerでのオンプレ専用
+
 ## 初期設定
 1. [.dev.vars.example](./.dev.vars.example) をコピーして `.dev.vars` にリネーム
 2. リネームした `.dev.vars` 内の以下変数を設定
-    - `NTFY_URL`: nftyで送る通知先のURL
+    - `NTFY_URL`: ntfyで送る通知先のURL
     - `NTFY_TOKEN`: ntfyで発行したアクセストークン（任意）
     - `LATITUDE`: 天気をチェックする緯度
     - `LONGITUDE`: 天気をチェックする経度
@@ -38,5 +41,15 @@ npx wrangler secret put LONGITUDE
 npx wrangler deploy
 ```
 
+## Docker起動
+オンプレで動かす場合はDockerを利用。
+
+1. `node_modules`、`.wrangler`を除いた本プロジェクトのファイルを任意の場所にコピー
+2. `docker`ディレクトリに移動
+3. 以下コマンドで起動
+``` bash
+docker compose up -d
+```
+
 ## デバッグ送信
-正常にnftyへ送信できるかテストしたい場合、[wrangler.jsonc](./wrangler.jsonc) 内の `DEBUG_SEND` を `true` に変更して起動。
+正常にntfyへ送信できるかテストしたい場合、[wrangler.jsonc](./wrangler.jsonc) 内の `DEBUG_SEND` を `true` に変更して起動。
